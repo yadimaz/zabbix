@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2022-08-09T12:31:08Z</date>
+    <groups>
+        <group>
+            <name>Templates/Virtualization</name>
+        </group>
+        <group>
+            <name>Virtual machines</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Cluster Hyper-V VM</template>
+            <name>Template Cluster Hyper-V VM</name>
+            <groups>
+                <group>
+                    <name>Templates/Virtualization</name>
+                </group>
+            </groups>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Discover VM</name>
+                    <type>TRAP</type>
+                    <key>vmd.trap</key>
+                    <delay>0</delay>
+                    <host_prototypes>
+                        <host_prototype>
+                            <host>{#VM_NAME}-{#VM_CLUSTER}</host>
+                            <name>{#VM_NAME}-{#VM_CLUSTER}</name>
+                            <group_links>
+                                <group_link>
+                                    <group>
+                                        <name>Virtual machines</name>
+                                    </group>
+                                </group_link>
+                            </group_links>
+                            <group_prototypes>
+                                <group_prototype>
+                                    <name>{#VM_CLUSTER}(VMs)</name>
+                                </group_prototype>
+                            </group_prototypes>
+                            <templates>
+                                <template>
+                                    <name>Template Hyper-V VM</name>
+                                </template>
+                            </templates>
+                            <macros>
+                                <macro>
+                                    <macro>{$CLUSTER}</macro>
+                                    <value>{#VM_CLUSTER}</value>
+                                </macro>
+                                <macro>
+                                    <macro>{$CLUSTER_ID}</macro>
+                                    <value>{#VM_ID}</value>
+                                </macro>
+                                <macro>
+                                    <macro>{$NAME}</macro>
+                                    <value>{#VM_NAME}</value>
+                                </macro>
+                                <macro>
+                                    <macro>{$VM_ELEMENT_NAME}</macro>
+                                    <value>{#VM_NAME}-{#VM_CLUSTER}</value>
+                                </macro>
+                            </macros>
+                        </host_prototype>
+                        <host_prototype>
+                            <host>{#VM_NAME}-{#VM_DOM}-{#VM_CLUSTER} test</host>
+                            <name>{#VM_NAME}-{#VM_DOM}-{#VM_CLUSTER} test</name>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <group_links>
+                                <group_link>
+                                    <group>
+                                        <name>Virtual machines</name>
+                                    </group>
+                                </group_link>
+                            </group_links>
+                            <group_prototypes>
+                                <group_prototype>
+                                    <name>{#VM_DOM}(VMs)</name>
+                                </group_prototype>
+                            </group_prototypes>
+                            <templates>
+                                <template>
+                                    <name>Template Hyper-V VM</name>
+                                </template>
+                            </templates>
+                            <macros>
+                                <macro>
+                                    <macro>{$CLUSTER}</macro>
+                                    <value>{#VM_CLUSTER}</value>
+                                </macro>
+                                <macro>
+                                    <macro>{$CLUSTER_ID}</macro>
+                                    <value>{#VM_ID}</value>
+                                </macro>
+                                <macro>
+                                    <macro>{$NAME}</macro>
+                                    <value>{#VM_NAME}</value>
+                                </macro>
+                                <macro>
+                                    <macro>{$VM_DOM}</macro>
+                                    <value>{#VM_DOM}</value>
+                                </macro>
+                                <macro>
+                                    <macro>{$VM_ELEMENT_NAME}</macro>
+                                    <value>{#VM_NAME}-{#VM_CLUSTER}</value>
+                                </macro>
+                            </macros>
+                        </host_prototype>
+                    </host_prototypes>
+                    <preprocessing>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <params>\u0027
+&quot;</params>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <params>{#N}
+&quot;{#VM_NAME}&quot;</params>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <params>{#D}
+&quot;{#VM_DOM}&quot;</params>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <params>{#O}
+&quot;{#VM_OWNERNODE}&quot;</params>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <params>{#C}
+&quot;{#VM_CLUSTER}&quot;</params>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <params>{#I}
+&quot;{#VM_ID}&quot;</params>
+                        </step>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <params>u0026
+&quot;</params>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+    </templates>
+</zabbix_export>

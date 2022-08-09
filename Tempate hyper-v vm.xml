@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2022-08-09T12:30:10Z</date>
+    <groups>
+        <group>
+            <name>Templates/Virtualization</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Hyper-V VM</template>
+            <name>Template Hyper-V VM</name>
+            <description>Template Microsoft VM Hyper-V Version: 1.0&#13;
+&#13;
+Template for monitoring node from Microsoft Failover cluster with Hyper-V role or standalone Hyper-V.&#13;
+&#13;
+&#13;
+Read this before:&#13;
+&#13;
+Main concept&#13;
+https://blogs.msdn.microsoft.com/tvoellm/2009/04/22/monitoring-hyper-v-performance/&#13;
+&#13;
+CPU&#13;
+https://blogs.technet.microsoft.com/neales/2016/10/24/hyper-v-performance-cpu/&#13;
+&#13;
+Memory&#13;
+https://blogs.technet.microsoft.com/neales/2016/11/22/hyper-v-performance-memory/&#13;
+&#13;
+Performance&#13;
+https://docs.microsoft.com/en-us/windows-server/administration/performance-tuning/role/hyper-v-server/detecting-virtualized-environment-bottlenecks&#13;
+&#13;
+WMI classes&#13;
+http://wutils.com/wmi/root/cimv2/win32_perfrawdata/</description>
+            <groups>
+                <group>
+                    <name>Templates/Virtualization</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>CPU</name>
+                </application>
+                <application>
+                    <name>Disk</name>
+                </application>
+                <application>
+                    <name>Memory</name>
+                </application>
+                <application>
+                    <name>trap json</name>
+                </application>
+                <application>
+                    <name>VM state</name>
+                </application>
+            </applications>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>ID Discover</name>
+                    <key>vm.id[{$CLUSTER},{$CLUSTER_ID}]</key>
+                    <delay>24h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>CPU Usage</name>
+                            <type>DEPENDENT</type>
+                            <key>vm.cpuuse[{#NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>CPU</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.CPUUsage</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm[{#CLUSTERID}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>VM ID</name>
+                            <type>DEPENDENT</type>
+                            <key>vm.id[{#NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>VM state</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.VmId</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm[{#CLUSTERID}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Memory Assigned (Выделенная память)</name>
+                            <type>DEPENDENT</type>
+                            <key>vm.memass[{#NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>Memory</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.MemoryAssigned</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm[{#CLUSTERID}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Memory Demand (Требуемая память)</name>
+                            <type>DEPENDENT</type>
+                            <key>vm.memdem[{#NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>Memory</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.MemoryDemand</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm[{#CLUSTERID}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Memory Pressure</name>
+                            <type>DEPENDENT</type>
+                            <key>vm.mempre[{#NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>Memory</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.MemoryPressure</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm[{#CLUSTERID}]</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{avg(10m)}&gt;{$HYPERV_VM_AVERAGE_MEMORY_PREASURE}</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>{avg(5m)}&lt;{$HYPERV_VM_AVERAGE_MEMORY_PREASURE}</recovery_expression>
+                                    <name>VM Average Memory Pressure '{#NAME}'  &gt; {$HYPERV_VM_AVERAGE_MEMORY_PREASURE}%</name>
+                                    <priority>WARNING</priority>
+                                    <description>VM NAME не хватает оперативной памяти</description>
+                                    <manual_close>YES</manual_close>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>VM Name</name>
+                            <type>DEPENDENT</type>
+                            <key>vm.name[{#NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>VM state</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.Name</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm[{#CLUSTERID}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>VM NodeName</name>
+                            <type>DEPENDENT</type>
+                            <key>vm.nodename[{#NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>VM state</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.NodeName</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm[{#CLUSTERID}]</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{diff()}&lt;&gt;0</expression>
+                                    <name>Мигрировала ВМ {#NAME}</name>
+                                    <priority>INFO</priority>
+                                    <description>ВМ &quot;{#NAME}&quot; переместилась на другой узел</description>
+                                    <manual_close>YES</manual_close>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>VM OS Name</name>
+                            <type>DEPENDENT</type>
+                            <key>vm.os[{#NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>VM state</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.GuestOperatingSystem</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vmos[{#NAME}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Processor Count</name>
+                            <type>DEPENDENT</type>
+                            <key>vm.proc[{#NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>CPU</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.ProcessorCount</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm[{#CLUSTERID}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>State Node</name>
+                            <type>DEPENDENT</type>
+                            <key>vm.state[{#NAME}&quot;]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>VM state</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.State</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm[{#CLUSTERID}]</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}=&quot;Off&quot;</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>{last()}=&quot;Running&quot;</recovery_expression>
+                                    <name>Выключена VM {#NAME}</name>
+                                    <priority>WARNING</priority>
+                                    <description>ВМ &quot;{#NAME}&quot; выключена</description>
+                                    <manual_close>YES</manual_close>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}=4</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>{last()}&lt;&gt;4</recovery_expression>
+                                    <name>Сбой VM {#NAME}</name>
+                                    <priority>DISASTER</priority>
+                                    <description>АХТУНГ!!!&#13;
+ВМ &quot;{#NAME}&quot;  СБой</description>
+                                    <manual_close>YES</manual_close>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>{#NAME}  - vm os json trap</name>
+                            <type>TRAP</type>
+                            <key>vmos[{#NAME}]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>trap json</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>STR_REPLACE</type>
+                                    <params>\u0027
+&quot;</params>
+                                </step>
+                                <step>
+                                    <type>STR_REPLACE</type>
+                                    <params>u0026
+&quot;</params>
+                                </step>
+                                <step>
+                                    <type>STR_REPLACE</type>
+                                    <params>_
+ </params>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>{#NAME}  - vm json trap</name>
+                            <type>TRAP</type>
+                            <key>vm[{#CLUSTERID}]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>trap json</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>STR_REPLACE</type>
+                                    <params>\u0027
+&quot;</params>
+                                </step>
+                                <step>
+                                    <type>STR_REPLACE</type>
+                                    <params>u0026
+&quot;</params>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <name>{#NAME} - CPU Usage</name>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <graph_items>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <drawtype>GRADIENT_LINE</drawtype>
+                                    <color>F44336</color>
+                                    <item>
+                                        <host>Template Hyper-V VM</host>
+                                        <key>vm.cpuuse[{#NAME}&quot;]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                        <graph_prototype>
+                            <name>{#NAME} - Memory Assigned</name>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <graph_items>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <drawtype>GRADIENT_LINE</drawtype>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Template Hyper-V VM</host>
+                                        <key>vm.memass[{#NAME}&quot;]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>2</sortorder>
+                                    <drawtype>GRADIENT_LINE</drawtype>
+                                    <color>F63100</color>
+                                    <item>
+                                        <host>Template Hyper-V VM</host>
+                                        <key>vm.memdem[{#NAME}&quot;]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                    <preprocessing>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <params>\u0027
+'</params>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>VHDKEY Discover</name>
+                    <key>vm.vhd[{$CLUSTER},{$NAME}]</key>
+                    <delay>24h</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>{#VHD_NAME} - Max Size</name>
+                            <type>DEPENDENT</type>
+                            <key>sizemax[{#VHD_NAME}]</key>
+                            <delay>0</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>Disk</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.Sizemax</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm.vhd[{#VHD_KEY}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>{#VHD_NAME} - Current Size</name>
+                            <type>DEPENDENT</type>
+                            <key>sizenow[{#VHD_NAME}]</key>
+                            <delay>0</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>Disk</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.Sizenow</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm.vhd[{#VHD_KEY}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>{#VHD_NAME}</name>
+                            <type>DEPENDENT</type>
+                            <key>vhd[{#VHD_NAME}]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <discover>NO_DISCOVER</discover>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>Disk</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.Name</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED_HEARTBEAT</type>
+                                    <params>3600</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>vm.vhd[{#VHD_KEY}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>{#VHD_KEY} - json</name>
+                            <type>TRAP</type>
+                            <key>vm.vhd[{#VHD_KEY}]</key>
+                            <delay>0</delay>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <applications>
+                                <application>
+                                    <name>trap json</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>STR_REPLACE</type>
+                                    <params>\u0027
+&quot;</params>
+                                </step>
+                                <step>
+                                    <type>STR_REPLACE</type>
+                                    <params>u0026
+&quot;</params>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <name>&quot;{#VHD_NAME}&quot; Size</name>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <graph_items>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <drawtype>GRADIENT_LINE</drawtype>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Template Hyper-V VM</host>
+                                        <key>sizenow[{#VHD_NAME}]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>2</sortorder>
+                                    <color>F63100</color>
+                                    <item>
+                                        <host>Template Hyper-V VM</host>
+                                        <key>sizemax[{#VHD_NAME}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                    <preprocessing>
+                        <step>
+                            <type>STR_REPLACE</type>
+                            <params>\u0027
+&quot;</params>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$HYPERV_VM_AVERAGE_MEMORY_PREASURE}</macro>
+                    <value>85</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
